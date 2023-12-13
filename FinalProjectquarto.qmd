@@ -536,6 +536,122 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
+## Analysis:
+
+To understand if there are any trends between the pollutant and asthma prevalence, as mentioned before, a double-axis plot was constructed for each state and pollutant. The most significant similarities for the pollutant ozone were states with high populations such as New York, Tennessee, Georgia, and Illinois as seen in Figure 1.  These states have higher populations which indicates a higher need for fossil fuels, which is where ozone comes from. A majority of the states did not have any significance, in actuality, a majority of rural states like Maine, Alaska, and Montana, had no real changes in trends , as seen in Figure 2. The ozone level for the more rural states was much lower than for the more populous states. Overall, there wasn\'t any significance in trends between ozone and asthma prevalence.
+
+```{r, echo=FALSE}
+#Figure 1
+library(latticeExtra)
+ozonemost <- ozonzedata1 %>% 
+  filter(state %in% c('New York', 'Tennessee', 'Georgia', 'Illinois'))
+
+custom_y_range <- c(5, 15)
+
+ozonemostobj1 <- xyplot(pollution ~ Year | factor(state), ozonemost, type = c("l", "g"), col='darkgreen')
+ozonemostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), ozonemost, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(ozonemostobj1, ozonemostobj2, add.ylab2 = TRUE, use.style=F )
+
+
+```
+
+Figure 1: The similar trends with Ozone.
+
+```{r, echo=FALSE}
+#Figure 2
+library(latticeExtra)
+ozoneleasr <- ozonzedata1 %>% 
+  filter(state %in% c('Maine', 'Alaska', 'Montana'))
+
+custom_y_range <- c(5, 15)
+
+ozone1mostobj1 <- xyplot(pollution ~ Year | factor(state), ozoneleasr, type = c("l", "g"), col='darkgreen')
+ozone1mostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), ozoneleasr, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(ozone1mostobj1, ozone1mostobj2, add.ylab2 = TRUE, use.style=F )
+
+
+
+```
+
+Figure 2: The different trends with Ozone.
+
+PM10 was also visualized. PM10 was the pollutant of most interest due to the more direct impact on lung inflammation thus leading to higher asthma attacks which could in theory lead to higher asthma prevalence. The most significant similarities between the PM10 trend and the asthma prevalence trend are in Nevada, California, Texas, New Mexico,  New Jersey, and Michigan as shown in Figure 3. These states are high in population and have high industrial facilities which correlates to a higher PM10 exposure. In addition, many of the states are known for their dry climates such as Nevada and California, a dryer climate may produce a lot more dust which increases PM10 in the air. Many of the less populous states such as South Dakota, Vermont, North Dakota, and Maine (Figure 4) do not have any real trends in their PM10 trends since they do not have much use for fossil fuels and are in more wetter climates. Overall, PM10 had interesting trends with asthma prevalence.
+
+```{r, echo=FALSE}
+#Figure 3
+library(latticeExtra)
+PM10_1most <- PM10_1 %>% 
+  filter(state %in% c('California', 'Texas', 'Nevada', 'New Mexico', 'Michigan','New Jersy' ))
+
+custom_y_range <- c(5, 15)
+
+PM10_1mostobj1 <- xyplot(pollution ~ Year | factor(state), PM10_1most, type = c("l", "g"), col='darkgreen')
+PM10_1mostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), PM10_1most, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(PM10_1mostobj1, PM10_1mostobj2, add.ylab2 = TRUE, use.style=F )
+
+
+```
+
+Figure 3: The similar trends with PM10.
+
+```{r, echo=FALSE}
+#Figure 4
+library(latticeExtra)
+PM10_1leasr <- PM10_1 %>% 
+  filter(state %in% c('South Dakota', 'North Dakota', 'Vermont', 'Maine' ))
+
+custom_y_range <- c(5, 15)
+
+PM10_2mostobj1 <- xyplot(pollution ~ Year | factor(state), PM10_1leasr, type = c("l", "g"), col='darkgreen')
+PM10_2mostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), PM10_1leasr, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(PM10_2mostobj1, PM10_2mostobj2, add.ylab2 = TRUE, use.style=F )
+
+
+
+```
+
+Figure 4: The different trends with PM10.
+
+Nitrogen dioxide was also visualized using the double y-axis. NO2 is also interesting because it is such a large by-product of fuel fossil consumption and power plants, so it is expected to be quite high in largely urban and industrial facilities. The most significant similarities between the trend of NO2 and asthma prevalence are in the states, of Nevada, California, New York, Illinois, and Ohio as shown in Figure 5. These states again, are high in population (many major cities) and have a lot of industrial facilities. It makes sense for these states to have higher NO2 levels due to their higher consumption of fossil fuels. The states that had less trends are states that have low activity such as Louisiana, Kansas, and Utah (Figure 6), along with others. There is no real trend between them.  Overall, the visual data from NO2 is similar to that of PM10.
+
+```{r, echo=FALSE}
+#Figure 5
+
+library(latticeExtra)
+No2_1most <- N02data1 %>% 
+  filter(state %in% c('California', 'New York', 'Nevada', 'Illinois', 'Ohio' ))
+
+custom_y_range <- c(5, 15)
+
+No2_1mostobj1 <- xyplot(pollution ~ Year | factor(state), No2_1most, type = c("l", "g"), col='darkgreen')
+No2_1mostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), No2_1most, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(No2_1mostobj1, No2_1mostobj2, add.ylab2 = TRUE, use.style=F )
+
+
+
+```
+
+Figure 5: The similar trends with NO2.
+
+```{r, echo=FALSE}
+#Figure 6
+
+library(latticeExtra)
+No2_1leas <- N02data1 %>% 
+  filter(state %in% c('Louisiana', 'Kansas', 'Utah' ))
+
+custom_y_range <- c(5, 15)
+
+No2_2mostobj1 <- xyplot(pollution ~ Year | factor(state), No2_1leas, type = c("l", "g"), col='darkgreen')
+No2_2mostobj2 <- xyplot(Prevalencepercent ~ Year | factor(state), No2_1leas, type = c("l", "g"), col='red', ylim = custom_y_range)
+doubleYScale(No2_2mostobj1, No2_2mostobj2, add.ylab2 = TRUE, use.style=F )
+
+```
+
+Figure 6: The different trends with NO2.
+
+## Conclusions:
+
 In addition to further analysis, the correlation between all the states and pollutants was done using a loop and added to a table.
 
 ```{r, echo=FALSE, results='hide'}
@@ -571,8 +687,4 @@ correlationtrend <- correlation_df %>%
 print(correlationtrend )
 ```
 
-## Analysis:
-
-## Conclusions:
-
-GitHub: https://github.com/luzmariav/FinalProject
+## GitHub: https://github.com/luzmariav/FinalProject
