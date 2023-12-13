@@ -1,0 +1,209 @@
+---
+title: "Air Pollution and Asthma From 2010-2021"
+format: pdf
+editor: visual
+---
+
+## Introduction:
+
+## Methodology:
+
+The data for the pollutants was obtained using the Air Quality System (AQS) API from the Environmental Protection Agency (EPA). The R package used to extract the data was 'RAQSAPI' which allowed you to gather data based on selected criteria. Three pollutants were selected including ozone (code:44201), NO2 (coded: 42602), and PM10 (coded: 81102). The yearly average for each of the pollutants for each state was gathered using a loop.
+
+```{r, echo=FALSE, results='hide'}
+library(keyring)
+
+keyring::key_set(service = "AQSDatamart", username = "luznya86@gmail.com")
+
+library(RAQSAPI) 
+
+datamartAPI_user <- "luznya86@gmail.com"
+server <- "AQSDatamart"
+
+aqs_credentials(username = datamartAPI_user, key = key_get(service = server, username = datamartAPI_user ) )
+
+library(RAQSAPI)
+
+bdate1 <- as.Date("20100101", format = "%Y%m%d")
+edate1 <- as.Date("20101231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2010 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate1 ,  
+                                      edate1 ,
+                                      stateFIPS = as.character(j))
+  polldata2010 <- rbind(polldata2010, report)                                    
+}
+
+
+bdate2 <- as.Date("20110101", format = "%Y%m%d")
+edate2 <- as.Date("20111231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2011 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate2 ,  
+                                      edate2 ,
+                                      stateFIPS = as.character(j))
+  polldata2011 <- rbind(polldata2011, report)                                    
+}
+
+
+bdate3 <- as.Date("20120101", format = "%Y%m%d")
+edate3 <- as.Date("20121231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2012 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate3 ,  
+                                      edate3 ,
+                                      stateFIPS = as.character(j))
+  polldata2012 <- rbind(polldata2012, report)                                    
+}
+
+bdate4 <- as.Date("20130101", format = "%Y%m%d")
+edate4 <- as.Date("20131231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2013 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate4 ,  
+                                      edate4 ,
+                                      stateFIPS = as.character(j))
+  polldata2013 <- rbind(polldata2013, report)                                    
+}
+
+bdate5 <- as.Date("20140101", format = "%Y%m%d")
+edate5 <- as.Date("20141231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2014 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate5 ,  
+                                      edate5 ,
+                                      stateFIPS = as.character(j))
+  polldata2014 <- rbind(polldata2014, report)                                    
+}
+
+bdate6 <- as.Date("20150101", format = "%Y%m%d")
+edate6 <- as.Date("20151231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2015 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate6 ,  
+                                      edate6 ,
+                                      stateFIPS = as.character(j))
+  polldata2015 <- rbind(polldata2015, report)                                    
+}
+
+bdate7 <- as.Date("20160101", format = "%Y%m%d")
+edate7 <- as.Date("20161231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2016 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate7 ,  
+                                      edate7 ,
+                                      stateFIPS = as.character(j))
+  polldata2016 <- rbind(polldata2016, report)                                    
+}
+
+bdate8 <- as.Date("20170101", format = "%Y%m%d")
+edate8 <- as.Date("20171231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2017 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate8 ,  
+                                      edate8 ,
+                                      stateFIPS = as.character(j))
+  polldata2017 <- rbind(polldata2017, report)                                    
+}
+
+bdate9 <- as.Date("20180101", format = "%Y%m%d")
+edate9 <- as.Date("20181231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2018 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate9 ,  
+                                      edate9 ,
+                                      stateFIPS = as.character(j))
+  polldata2018 <- rbind(polldata2018, report)                                    
+}
+
+bdate10 <- as.Date("20190101", format = "%Y%m%d")
+edate10 <- as.Date("20191231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2019 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate10 ,  
+                                      edate10 ,
+                                      stateFIPS = as.character(j))
+  polldata2019 <- rbind(polldata2019, report)                                    
+}
+
+bdate11 <- as.Date("20200101", format = "%Y%m%d")
+edate11 <- as.Date("20201231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2020 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate11 ,  
+                                      edate11 ,
+                                      stateFIPS = as.character(j))
+  polldata2020 <- rbind(polldata2020, report)                                    
+}
+
+bdate12 <- as.Date("20210101", format = "%Y%m%d")
+edate12 <- as.Date("20211231", format = "%Y%m%d")
+params <- c("44201", "42602", "81102")
+polldata2021 <- data.frame()
+
+state <- sprintf("%02d", 1:50)
+for (j in state) {
+  report <-aqs_annualsummary_by_state(params,
+                                      bdate12 ,  
+                                      edate12 ,
+                                      stateFIPS = as.character(j))
+  polldata2021 <- rbind(polldata2021, report)                                    
+}
+
+```
+
+The data for the asthma data was obtained from Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data collected by the CDC through web scrapping. The R package used to extract the data was 'xml2' and 'rvest' along with the help of 'tidyverse'. The asthma number and prevalence data were collected by the state for each year. A loop was used to collect the majority of the data.
+
+Using the R packages, 'dplyr', 'tidyverse', and 'tidyr', the data was cleaned for only the needed columns such as the parameter, state, and pollution quantity for the AQS data. The data was merged and made wider by parameter.
+
+To visualize the data, the R package 'latticeExtra' was used. This package allows to plot a double y-axis graph for each of the states. This package was used in the shiny object so that one can choose what state and pollutant trends they wish to see. The shiny object was created using the R package 'shiny'. This helps visualize what state and pollutant someone might want to see instead of having all the graphs all at once.
+
+In addition to further analysis, the correlation between all the states and pollutants was done using a loop and added to a table.
+
+## Analysis:
+
+## Conclusions:
