@@ -487,7 +487,89 @@ pollandasthma <- pollandasthma %>%
 
 To visualize the data, the R package 'latticeExtra' was used. This package allows to plot a double y-axis graph for each of the states. This package was used in the shiny object so that one can choose what state and pollutant trends they wish to see. The shiny object was created using the R package 'shiny'. This helps visualize what state and pollutant someone might want to see instead of having all the graphs all at once.
 
+```{r, echo=FALSE}
+library(shiny)
+library(ggplot2)
+library(latticeExtra)
+
+
+ui <- fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+
+      selectInput(inputId = "state", label = "Select State", choices = unique(pollandasthma$state)),
+
+      selectInput(inputId = "pollutant", label = "Select Pollutant", choices = c( "Ozone", "PM10", "NO2"))
+    ),
+    mainPanel(
+
+      plotOutput("line_plot")
+    )
+  )
+)
+
+server <- function(input, output) {
+
+  filtered_data <- reactive({
+    pollandasthma %>%
+      filter(state == input$state)
+  })
+  
+  output$line_plot <- renderPlot({
+    y_variable <- switch(
+      input$pollutant,
+      Ozone = "Ozone",
+      PM10 = "PM10",
+      NO2 = "NO2"
+    )
+    
+    obj1 <- xyplot(filtered_data()[[y_variable]] ~ Year | factor(state), filtered_data(), type = c("l", "g"), col='darkgreen' , ylab = "Pollutant Level", auto.key = list(space = "right", title = 'Pollutant'))
+    obj2 <- xyplot(filtered_data()$Prevalencepercent ~ Year | factor(state), filtered_data(), type = c("l", "g"), col='black', ylab = "Prevalence Percent", auto.key = list(space = "right", title = "Asthma Prevalence"))
+    combined_plot <- doubleYScale(obj2, obj1, add.ylab2 = TRUE, use.style=FALSE)
+    
+    print(combined_plot)
+    
+  })
+}
+
+
+shinyApp(ui = ui, server = server)
+```
+
 In addition to further analysis, the correlation between all the states and pollutants was done using a loop and added to a table.
+
+```{r, echo=FALSE, results='hide'}
+## loop to make the correlations go faster
+library(stats)
+
+states <- unique(pollandasthma$state)
+
+correlation_df <- data.frame(State = character(), Pollutant = character(), Correlation = numeric(), stringsAsFactors = FALSE)
+
+
+for (state in states) {
+  state_data <- subset(pollandasthma, state == state)
+  
+  pollutants <- c("PM10", "NO2", "Ozone")
+  for (pollutant in pollutants) {
+
+    correlation <- cor(state_data$Prevalencepercent, state_data[[pollutant]], use = "complete.obs")
+    
+    correlation_df <- rbind(correlation_df, data.frame(State = state, Pollutant = pollutant, Correlation = correlation))
+  }
+}
+
+### clenaing the table to mke it easier to read
+
+correlationtrend <- correlation_df %>% 
+  pivot_wider(names_from = Pollutant, values_from = Correlation)
+
+
+```
+
+```{r, echo=FALSE}
+print(correlationtrend )
+```
 
 ## Analysis:
 
