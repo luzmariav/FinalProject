@@ -198,7 +198,116 @@ for (j in state) {
 
 The data for the asthma data was obtained from Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data collected by the CDC through web scrapping. The R package used to extract the data was 'xml2' and 'rvest' along with the help of 'tidyverse'. The asthma number and prevalence data were collected by the state for each year. A loop was used to collect the majority of the data.
 
+```{r, echo=FALSE, results='hide'}
+library(xml2)
+library(rvest)
+library(tidyverse)
+
+Asthmadatastate <- data.frame()
+
+years <- 2011:2017
+
+for (i in years) {
+  url <- paste0("https://www.cdc.gov/asthma/brfss/", i, "/tableC1.htm")
+  src <- read_html(url)
+  print(url)
+  
+  nds1 <- html_elements(src, xpath = '//td | //th')
+  
+  str(nds1)
+  
+  pop1 <- html_text(nds1) 
+  
+  wable1 <- pop1 %>%
+    matrix(ncol = 8, byrow = TRUE) %>%
+    as.data.frame()
+  wable1$Year <- i
+  print(wable1)
+  
+  if (ncol(Asthmadatastate) == 0) {
+    Asthmadatastate <- wable1
+  } else {
+    Asthmadatastate <- rbind(Asthmadatastate, wable1)
+  }
+}
+
+
+## adding in 2010
+url10 <- paste0("https://www.cdc.gov/asthma/brfss/2010/current/tableC1.htm")
+src10 <- read_html(url10)
+print(url10)
+
+nds10 <- html_elements(src10, xpath = '//td | //th')
+
+str(nds10)
+
+pop10 <- html_text(nds10) 
+
+wable10 <- pop10 %>%
+  matrix(ncol = 8, byrow = TRUE) %>%
+  as.data.frame()
+wable10$Year <- 2010
+print(wable10)
+
+if (ncol(Asthmadatastate) == 0) {
+  Asthmadatastate <- wable10
+} else {
+  Asthmadatastate <- rbind(Asthmadatastate, wable10)
+}
+#done
+
+library(openxlsx)
+
+brssf2018 <- read.xlsx("/Users/luzvillanueva/Desktop/Surv727/brssf2018.xlsx")
+Asthmadatastate <- rbind(Asthmadatastate, brssf2018)
+
+
+library(openxlsx)
+
+brssf2019 <- read.xlsx("/Users/luzvillanueva/Desktop/Surv727/brssf2019.xlsx")
+Asthmadatastate <- rbind(Asthmadatastate, brssf2019)
+
+library(openxlsx)
+
+brssf2020 <- read.xlsx("/Users/luzvillanueva/Desktop/Surv727/brssf2020.xlsx")
+Asthmadatastate <- rbind(Asthmadatastate, brssf2020)
+
+library(openxlsx)
+
+brssf2020 <- read.xlsx("/Users/luzvillanueva/Desktop/Surv727/brssf2020.xlsx")
+Asthmadatastate <- rbind(Asthmadatastate, brssf2020)
+
+#adding in 2021
+url21 <- paste0("https://www.cdc.gov/asthma/brfss/2021/tableC1.html")
+src21 <- read_html(url21)
+print(url21)
+
+nds21 <- html_elements(src21, xpath = '//td | //th')
+
+str(nds21)
+
+pop21 <- html_text(nds21) 
+
+wable21 <- pop21 %>%
+  matrix(ncol = 8, byrow = TRUE) %>%
+  as.data.frame()
+wable21$Year <- 2021
+print(wable21)
+
+if (ncol(Asthmadatastate) == 0) {
+  Asthmadatastate <- wable21
+} else {
+  Asthmadatastate <- rbind(Asthmadatastate, wable21)
+}
+
+```
+
 Using the R packages, 'dplyr', 'tidyverse', and 'tidyr', the data was cleaned for only the needed columns such as the parameter, state, and pollution quantity for the AQS data. The data was merged and made wider by parameter.
+
+```{r, echo=FALSE, results='hide'}
+
+
+```
 
 To visualize the data, the R package 'latticeExtra' was used. This package allows to plot a double y-axis graph for each of the states. This package was used in the shiny object so that one can choose what state and pollutant trends they wish to see. The shiny object was created using the R package 'shiny'. This helps visualize what state and pollutant someone might want to see instead of having all the graphs all at once.
 
