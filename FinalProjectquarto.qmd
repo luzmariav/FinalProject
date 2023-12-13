@@ -6,11 +6,20 @@ editor: visual
 
 ## Introduction:
 
+Asthma is a large problem around the world, especially in the USA where 1 in 12 people have the condition (1). The severity of asthma is largely genetic there are a variety of factors that can cause asthma including the environment.
+
+Air quality is a large contributor to allergy and lung inflammation which leads to asthma (2). Air quality is affected by a variety of things, the largest contributor being fossil fuels. Fossil fuels emit many harmful pollutants that stay in the air for a long time, including ozone, nitrogen dioxide (NO2), and small particulate matter (PM10) that will be discussed. In addition, natural disasters such as wildfires and earthquakes can cause an increase in PM10. These pollutants cause inflammations that can lead to asthma attacks and increase the intensity and number of asthma attacks. 
+
+Since the United States is large, there are many different lifestyles, climates, and topographies. This makes some states more suspectable to more asthma-prone conditions. Some states have more natural disasters than others such as California and Texas. California has wildfires and earthquakes while Texas is known for its tornados. In addition, the west coast and center of the United States are much dryer compared to other places which may indicate there is more particulate matter in the air. The urban cities also have more pollution due to cars and industries working there.
+
+Considering all these factors, the purpose of this exploratory project is to see if there are any similar trends between pollutants and asthma prevalence between states.
+
 ## Methodology:
 
 The data for the pollutants was obtained using the Air Quality System (AQS) API from the Environmental Protection Agency (EPA). The R package used to extract the data was 'RAQSAPI' which allowed you to gather data based on selected criteria. Three pollutants were selected including ozone (code:44201), NO2 (coded: 42602), and PM10 (coded: 81102). The yearly average for each of the pollutants for each state was gathered using a loop.
 
-```{r, echo=FALSE, results='hide'}
+```{r, echo=FALSE, results='hide', cache=TRUE}
+
 library(keyring)
 
 keyring::key_set(service = "AQSDatamart", username = "luznya86@gmail.com")
@@ -21,7 +30,6 @@ datamartAPI_user <- "luznya86@gmail.com"
 server <- "AQSDatamart"
 
 aqs_credentials(username = datamartAPI_user, key = key_get(service = server, username = datamartAPI_user ) )
-
 library(RAQSAPI)
 
 bdate1 <- as.Date("20100101", format = "%Y%m%d")
@@ -391,6 +399,16 @@ newpoll21 <- polldata2021 %>%
 allstates <- rbind(newpoll10, newpoll11, newpoll12, newpoll13, newpoll14, newpoll15,
                    newpoll16, newpoll17, newpoll18, newpoll19, newpoll20, newpoll21)
 
+ozonzedata <- allstates %>% 
+  filter(parameter=="Ozone")
+
+NO2data <- allstates %>% 
+  filter(parameter=="Nitrogen dioxide (NO2)")
+
+PM10 <- allstates %>% 
+  filter(parameter=="PM10 Total 0-10um STP")
+
+
 ## this is the cleaning for the webscrapping data
 
 Asthmadatastate2 <- Asthmadatastate %>% 
@@ -483,6 +501,33 @@ pollandasthma <- pollandasthma %>%
 pollandasthma <- pollandasthma %>% 
   mutate(Prevalencepercent = as.numeric(Prevalencepercent))
 
+##for individual pollutants
+ozonzedata1 <- merge(Asthmadatastate4, ozonzedata, by = c("Year", "state"))
+
+ozonzedata1$athsmaprevalence <- gsub(",", "", ozonzedata1$athsmaprevalence)
+
+ozonzedata1 <- ozonzedata1 %>% 
+  mutate(athsmaprevalence = as.numeric(athsmaprevalence))
+
+PM10_1 <- merge(Asthmadatastate4, PM10, by = c("Year", "state"))
+
+PM10_1$athsmaprevalence <- gsub(",", "", PM10_1$athsmaprevalence)
+
+PM10_1 <- PM10_1 %>% 
+  mutate(athsmaprevalence = as.numeric(athsmaprevalence))
+
+N02data1 <- merge(Asthmadatastate4, NO2data, by = c("Year", "state"))
+
+N02data1$athsmaprevalence <- gsub(",", "", N02data1$athsmaprevalence)
+
+N02data1 <- N02data1 %>% 
+  mutate(athsmaprevalence = as.numeric(athsmaprevalence))
+
+
+```
+
+```{r}
+write.csv(allstates, file = "allstates.csv", row.names = T)
 ```
 
 To visualize the data, the R package 'latticeExtra' was used. This package allows to plot a double y-axis graph for each of the states. This package was used in the shiny object so that one can choose what state and pollutant trends they wish to see. The shiny object was created using the R package 'shiny'. This helps visualize what state and pollutant someone might want to see instead of having all the graphs all at once.
@@ -538,7 +583,7 @@ shinyApp(ui = ui, server = server)
 
 ## Analysis:
 
-To understand if there are any trends between the pollutant and asthma prevalence, as mentioned before, a double-axis plot was constructed for each state and pollutant. The most significant similarities for the pollutant ozone were states with high populations such as New York, Tennessee, Georgia, and Illinois as seen in Figure 1.  These states have higher populations which indicates a higher need for fossil fuels, which is where ozone comes from. A majority of the states did not have any significance, in actuality, a majority of rural states like Maine, Alaska, and Montana, had no real changes in trends , as seen in Figure 2. The ozone level for the more rural states was much lower than for the more populous states. Overall, there wasn\'t any significance in trends between ozone and asthma prevalence.
+To understand if there are any trends between the pollutant and asthma prevalence, as mentioned before, a double-axis plot was constructed for each state and pollutant. The most significant similarities for the pollutant ozone were states with high populations such as New York, Tennessee, Georgia, and Illinois as seen in Figure 1.  These states have higher populations which indicates a higher need for fossil fuels, which is where ozone comes from. A majority of the states did not have any significance, in actuality, a majority of rural states like Maine, Alaska, and Montana, had no real changes in trends , as seen in Figure 2. The ozone level for the more rural states was much lower than for the more populous states. Overall, there wasn't any significance in trends between ozone and asthma prevalence.
 
 ```{r, echo=FALSE}
 #Figure 1
@@ -652,6 +697,16 @@ Figure 6: The different trends with NO2.
 
 ## Conclusions:
 
+This exploratory project had some interesting findings. According to the visual representations, ozone was not a major contributor to asthma prevalence. It may be that the concentration is much too low to induce lung inflammation. Even in locations where there is a high population and high fossil fuel activity, there was not a clear trend in the asthma prevalence with ozone. In terms of PM10 and NO2, there were more trends that could be followed especially for the states that have higher populations and fossil fuel activity. These states followed trends more closely.
+
+The way I chose to determine if the lines were closely related is by looking at the trends and seeing if the highs and lows aligned because it is expected that with higher pollution rates, there would be higher asthma prevalence. 
+
+I wanted to add a more qualitative measurement of similarity and I thought a correlation between them might work but it could not be added since the trends are not linear. Since the trend isn't linear, the correlations would not say anything significant. I added the code below to the supplement.
+
+The limitation of this project is that this is all visualization data, this is not the complete answer to the exploration question. There are many future questions to be answered such as if there is a difference in child and adult asthma prevalence or to look at a closer time frame like monthly instead of yearly. Since the data is yearly there may have been a difference in asthma prevalence by month. In addition, it would also be interesting to look at asthma attacks and see if there are any trends there.
+
+## Supplement:
+
 In addition to further analysis, the correlation between all the states and pollutants was done using a loop and added to a table.
 
 ```{r, echo=FALSE, results='hide'}
@@ -688,3 +743,8 @@ print(correlationtrend )
 ```
 
 ## GitHub: https://github.com/luzmariav/FinalProject
+
+## References:
+
+1.  Asthma and Allergy Foundation of America. https://aafa.org/asthma/asthma-facts/#:\~:text=How%20Common%20Is%20Asthma%3F,about%201%20in%2012%20people.&text=More%20than%2022%20million%20U.S.%20adults%20ages%2018%20and%20older%20have%20asthma.
+2.  American Lung Association. https://www.lung.org/lung-health-diseases/lung-disease-lookup/asthma/learn-about-asthma/what-causes-asthma
